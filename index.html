@@ -288,8 +288,11 @@
         </form>
 
         <!-- הודעת שגיאה פנימית במקרה של תקלה -->
-        <div id="errorMessage" class="hidden text-center py-4 text-red-600 font-semibold text-sm">
-          אירעה שגיאה בשליחת הפרטים. אנא ודאו שאימתתם את ה-Access Key במייל שלכם ונסו שוב.
+        <div id="errorMessage" class="hidden text-center py-4 text-red-600 font-semibold text-sm space-y-2">
+          <p>אירעה שגיאה בשליחת הפרטים.</p>
+          <p class="text-xs font-normal text-slate-500 leading-relaxed">
+            טיפ: אם קובץ ה-HTML מופעל ישירות מהמחשב שלכם (דאבל-קליק על הקובץ), הדפדפן עלול לחסום את השליחה מטעמי אבטחה (CORS). יש להעלות את הקובץ לשרת/אחסון חינמי, או לוודא שלחצתם על קישור האימות שנשלח אליכם מ-Web3Forms למייל.
+          </p>
         </div>
 
         <!-- Dynamic Success Message (Initially Hidden) -->
