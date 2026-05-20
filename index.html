@@ -244,13 +244,6 @@
       <!-- Form Card Container -->
       <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
         <form id="leadForm" class="space-y-6">
-          <!-- Web3Forms Config Fields -->
-          <input type="hidden" name="access_key" value="7b1dcc62-e7d6-43f0-b41f-da7974cd3d35">
-          <input type="hidden" name="subject" value="ליד חדש מדף הנחיתה!">
-          <input type="hidden" name="from_name" value="דף נחיתה כושר 40+">
-          <!-- מונע הגעת ספאם באופן מובנה -->
-          <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
-
           <!-- Full Name -->
           <div>
             <label for="fullName" class="block text-sm font-semibold text-slate-700 mb-2">שם מלא</label>
@@ -287,14 +280,6 @@
           </button>
         </form>
 
-        <!-- הודעת שגיאה פנימית במקרה של תקלה -->
-        <div id="errorMessage" class="hidden text-center py-4 text-red-600 font-semibold text-sm space-y-2">
-          <p>אירעה שגיאה בשליחת הפרטים.</p>
-          <p class="text-xs font-normal text-slate-500 leading-relaxed">
-            טיפ: אם קובץ ה-HTML מופעל ישירות מהמחשב שלכם (דאבל-קליק על הקובץ), הדפדפן עלול לחסום את השליחה מטעמי אבטחה (CORS). יש להעלות את הקובץ לשרת/אחסון חינמי, או לוודא שלחצתם על קישור האימות שנשלח אליכם מ-Web3Forms למייל.
-          </p>
-        </div>
-
         <!-- Dynamic Success Message (Initially Hidden) -->
         <div id="successMessage" class="hidden text-center py-8 space-y-4">
           <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl animate-bounce">
@@ -316,57 +301,28 @@
     </div>
   </footer>
 
-  <!-- AJAX Submission Script -->
   <script>
     const form = document.getElementById('leadForm');
     const successMessage = document.getElementById('successMessage');
-    const errorMessage = document.getElementById('errorMessage');
     const submitBtn = document.getElementById('submitBtn');
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       
-      // איפוס מצב שגיאות קודם
-      errorMessage.classList.add('hidden');
+      const name = document.getElementById('fullName').value;
+      const phone = document.getElementById('phoneNumber').value;
+      const goal = document.getElementById('goal').value;
+
+      // שלב 1: הצגת הודעת הצלחה מיידית על המסך
+      form.classList.add('hidden');
+      successMessage.classList.remove('hidden');
+
+      // שלב 2: שליחה ישירה ל-WhatsApp של המאמן ללא שרת
+      const whatsappText = encodeURIComponent(`היי! אני רוצה לתאם שיחת ייעוץ קצרה.\n\nשם מלא: ${name}\nטלפון: ${phone}\nמטרה עיקרית: ${goal}`);
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=972548383451&text=${whatsappText}`;
       
-      // שינוי כפתור למצב שליחה (דיסייבלד כדי למנוע שליחות כפולות)
-      const originalBtnText = submitBtn.innerText;
-      submitBtn.innerText = 'שולח...';
-      submitBtn.disabled = true;
-
-      const formData = new FormData(form);
-      const object = Object.fromEntries(formData);
-      const json = JSON.stringify(object);
-
-      fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: json
-      })
-      .then(async (response) => {
-        let jsonRes = await response.json();
-        if (response.status == 200) {
-          // הצלחה
-          form.classList.add('hidden');
-          successMessage.classList.remove('hidden');
-        } else {
-          // תקלה מצד השרת
-          console.error(jsonRes);
-          errorMessage.classList.remove('hidden');
-          submitBtn.innerText = originalBtnText;
-          submitBtn.disabled = false;
-        }
-      })
-      .catch((error) => {
-        // תקלה בתקשורת
-        console.error(error);
-        errorMessage.classList.remove('hidden');
-        submitBtn.innerText = originalBtnText;
-        submitBtn.disabled = false;
-      });
+      // פתיחת WhatsApp בחלון חדש
+      window.open(whatsappUrl, '_blank');
     });
   </script>
 
